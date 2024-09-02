@@ -4,9 +4,11 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import TransactionCard from "./TransactionCard";
 
 const TransactionHistory = () => {
-  const [walletAddress, setWalletAddress] = useState(
-    "BrjZuswirZd7DZp58w5Tg9tWeGcyhnH7NNxf5hyMp7YV"
-  );
+  const apiUrl = import.meta.env.VITE_API_KEY;
+
+  console.log(apiUrl);
+
+  const [walletAddress, setWalletAddress] = useState("");
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -17,7 +19,7 @@ const TransactionHistory = () => {
     setError("");
 
     try {
-      const connection = new Connection("https://mainnet.helius-rpc.com/?api-key=3426a219-4924-43e4-b5e8-400fcbce233d");
+      const connection = new Connection(`${apiUrl}`);
       const publicKey = new PublicKey(walletAddress);
       const signatures = await connection.getSignaturesForAddress(publicKey);
       const transactionDetails = await Promise.all(
@@ -30,7 +32,6 @@ const TransactionHistory = () => {
       );
       setTransactions(transactionDetails);
       console.log(transactionDetails);
-      
     } catch (err) {
       console.error("Error fetching transactions:", err);
       setError(
